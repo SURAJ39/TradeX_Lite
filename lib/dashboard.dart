@@ -26,6 +26,8 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
   late WebSocketChannel channel;
   bool isSocketConnected = false;
   Timer? updateTimer;
+  String selectedFilter = 'Alphabetical';
+
 
   @override
   void dispose() {
@@ -118,7 +120,7 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
     );
   }
 
-  AppBar _getAppBar() {
+   _getAppBar() {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -188,7 +190,6 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
         children: indexes.map((item) {
           final isPositive = (item["change"] as double) >= 0;
           return Container(
-            width: 150,
             margin: const EdgeInsets.only(right: 12),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -199,33 +200,54 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
               ),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item["name"],
-                    style: const TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.w400)),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Text(
-                      item["value"].toStringAsFixed(2),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 50, maxWidth: 150),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item["name"],
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "${isPositive ? '+' : ''}${item["change"].toStringAsFixed(2)}%",
-                      style: TextStyle(
-                          color: isPositive
-                              ? Colors.greenAccent
-                              : Colors.redAccent),
-                    ),
-                  ],
-                ),
-              ],
+                          color: Colors.grey, fontWeight: FontWeight.w400)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text(
+                        item["value"].toStringAsFixed(2),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16),
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isPositive
+                                  ? Icons.arrow_upward
+                                  : Icons.arrow_downward,
+                              color: isPositive
+                                  ? Colors.greenAccent
+                                  : Colors.redAccent,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              "${isPositive ? '+' : ''}${item["change"].toStringAsFixed(2)}%",
+                              style: TextStyle(
+                                  color: isPositive
+                                      ? Colors.greenAccent
+                                      : Colors.redAccent),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         }).toList(),
@@ -233,7 +255,7 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
     );
   }
 
-   _getInvestmentSummary() {
+  _getInvestmentSummary() {
     final data = dummyDashboardData["investmentSummary"];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,80 +313,282 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
     );
   }
 
-   _getTrendingStocks(List<dynamic> stocks) {
+  // _getTrendingStocks(List<dynamic> stocks) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Text(
+  //         "Trending Stocks",
+  //         style: TextStyle(
+  //             color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
+  //       ),
+  //       const SizedBox(height: 15),
+  //       stocks.isEmpty
+  //           ? const Center(
+  //         child: Padding(
+  //           padding: EdgeInsets.all(20),
+  //           child: Text("No data found",
+  //               style: TextStyle(color: Colors.white54, fontSize: 16)),
+  //         ),
+  //       )
+  //           : Column(
+  //         children: stocks.map((item) {
+  //           final isPositive = item["change"] >= 0;
+  //           return InkWell(
+  //             onTap: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => StockLandingPage(
+  //                     symbol: item["symbol"],
+  //                     price: item["price"],
+  //                     change: item["change"],
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //             child: Card(
+  //               color: const Color(0xFF203A43),
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(12)),
+  //               margin: const EdgeInsets.only(bottom: 10, right: 10),
+  //               child: ListTile(
+  //                 leading: CircleAvatar(
+  //                   backgroundColor: Colors.white.withOpacity(0.2),
+  //                   child: Text(item["symbol"][0],
+  //                       style: const TextStyle(
+  //                           color: Colors.white, fontSize: 16)),
+  //                 ),
+  //                 title: Text(
+  //                   item["symbol"],
+  //                   style: const TextStyle(
+  //                       color: Colors.white,
+  //                       fontWeight: FontWeight.w400,
+  //                       fontSize: 16),
+  //                 ),
+  //                 trailing: Column(
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: [
+  //                     Text("₹${item["price"].toStringAsFixed(2)}",
+  //                         style: const TextStyle(color: Colors.grey)),
+  //                     Row(
+  //                       mainAxisSize: MainAxisSize.min,
+  //                       children: [
+  //                         Icon(
+  //                           isPositive
+  //                               ? Icons.arrow_upward
+  //                               : Icons.arrow_downward,
+  //                           color:
+  //                           isPositive ? Colors.greenAccent : Colors.redAccent,
+  //                           size: 16,
+  //                         ),
+  //                         const SizedBox(width: 2),
+  //
+  //                         Text(
+  //                           "${isPositive ? '+' : ''}${item["change"].toStringAsFixed(2)}%",
+  //                           style: TextStyle(
+  //                               color: isPositive
+  //                                   ? Colors.greenAccent
+  //                                   : Colors.redAccent,
+  //                               fontWeight: FontWeight.w400),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         }).toList(),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+
+  _getTrendingStocks(List<dynamic> stocks) {
+    List<dynamic> filteredStocks = [...stocks];
+
+    switch (selectedFilter) {
+      case 'Alphabetical':
+        filteredStocks.sort((a, b) => a["symbol"].compareTo(b["symbol"]));
+        break;
+      case 'Low to High':
+        filteredStocks.sort((a, b) => (a["price"] as double).compareTo(b["price"] as double));
+        break;
+      case 'High to Low':
+        filteredStocks.sort((a, b) => (b["price"] as double).compareTo(a["price"] as double));
+        break;
+      case 'Up':
+        filteredStocks.sort((a, b) => (b["change"] as double).compareTo(a["change"] as double));
+        break;
+      case 'Down':
+        filteredStocks.sort((a, b) => (a["change"] as double).compareTo(b["change"] as double));
+        break;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Trending Stocks",
-          style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Trending Stocks",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
+            ),
+            IconButton(
+              icon: const Icon(Icons.filter_list_rounded, color: Colors.white),
+              onPressed: () {
+                _showFilterBottomSheet();
+              },
+            ),
+          ],
         ),
         const SizedBox(height: 15),
-        stocks.isEmpty
+        filteredStocks.isEmpty
             ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text("No data found",
-                      style: TextStyle(color: Colors.white54, fontSize: 16)),
-                ),
-              )
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Text("No data found",
+                style: TextStyle(color: Colors.white54, fontSize: 16)),
+          ),
+        )
             : Column(
-                children: stocks.map((item) {
-                  final isPositive = item["change"] >= 0;
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => StockLandingPage(
-                            symbol: item["symbol"],
-                            price: item["price"],
-                            change: item["change"],
-                          ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      color: const Color(0xFF203A43),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      margin: const EdgeInsets.only(bottom: 10, right: 10),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.white.withOpacity(0.2),
-                          child: Text(item["symbol"][0],
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 16)),
-                        ),
-                        title: Text(
-                          item["symbol"],
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                        ),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("₹${item["price"].toStringAsFixed(2)}",
-                                style: const TextStyle(color: Colors.grey)),
-                            Text(
-                              "${isPositive ? '+' : ''}${item["change"].toStringAsFixed(2)}%",
-                              style: TextStyle(
-                                  color: isPositive
-                                      ? Colors.greenAccent
-                                      : Colors.redAccent,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ],
-                        ),
-                      ),
+          children: filteredStocks.map((item) {
+            final isPositive = item["change"] >= 0;
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StockLandingPage(
+                      symbol: item["symbol"],
+                      price: item["price"],
+                      change: item["change"],
                     ),
-                  );
-                }).toList(),
+                  ),
+                );
+              },
+              child: Card(
+                color: const Color(0xFF203A43),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                margin: const EdgeInsets.only(bottom: 10, right: 10),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                    child: Text(item["symbol"][0],
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 16)),
+                  ),
+                  title: Text(
+                    item["symbol"],
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16),
+                  ),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("₹${item["price"].toStringAsFixed(2)}",
+                          style: const TextStyle(color: Colors.grey)),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isPositive
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            color: isPositive
+                                ? Colors.greenAccent
+                                : Colors.redAccent,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            "${isPositive ? '+' : ''}${item["change"].toStringAsFixed(2)}%",
+                            style: TextStyle(
+                                color: isPositive
+                                    ? Colors.greenAccent
+                                    : Colors.redAccent,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            );
+          }).toList(),
+        ),
       ],
+    );
+  }
+
+   _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: commonBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Sort / Filter",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.cancel, color: Colors.white),
+                    onPressed: () {
+                      Navigator.pop(context); // close bottom sheet
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              ...[
+                'Alphabetical',
+                'Low to High',
+                'High to Low',
+                'Up',
+                'Down'
+              ].map((filter) {
+                return ListTile(
+                  title: Text(
+                    filter,
+                    style: TextStyle(
+                        color: selectedFilter == filter
+                            ? Colors.greenAccent
+                            : Colors.white),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      selectedFilter = filter;
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

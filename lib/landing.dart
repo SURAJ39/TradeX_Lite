@@ -138,13 +138,23 @@ class _StockLandingPageState extends State<StockLandingPage> {
               ),
             ),
             const SizedBox(width: 10),
-            Text(
-              "${isPositive ? '+' : ''}${currentChange.toStringAsFixed(2)}%",
-              style: TextStyle(
-                color: isPositive ? Colors.greenAccent : Colors.redAccent,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
+            Row(
+              children: [
+                Icon(
+                  isPositive ? Icons.arrow_upward : Icons.arrow_downward,
+                  color: isPositive ? Colors.greenAccent : Colors.redAccent,
+                  size: 16,
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  "${isPositive ? '+' : ''}${currentChange.toStringAsFixed(2)}%",
+                  style: TextStyle(
+                    color: isPositive ? Colors.greenAccent : Colors.redAccent,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
