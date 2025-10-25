@@ -159,9 +159,9 @@ class _LoginPageState extends State<LoginPage> {
     return TextFormField(
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.email, color: Colors.white70),
+        prefixIcon: const Icon(Icons.email, color: Colors.grey),
         labelText: "Email",
-        labelStyle: const TextStyle(color: Colors.white70),
+        labelStyle: const TextStyle(color: Colors.grey),
         filled: true,
         fillColor: Colors.white10,
         border: OutlineInputBorder(
@@ -181,9 +181,9 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: !_isPasswordVisible,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+        prefixIcon: const Icon(Icons.lock, color: Colors.grey),
         labelText: "Password",
-        labelStyle: const TextStyle(color: Colors.white70),
+        labelStyle: const TextStyle(color: Colors.grey),
         filled: true,
         fillColor: Colors.white10,
         border: OutlineInputBorder(
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
         suffixIcon: IconButton(
           icon: Icon(
             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            color: Colors.white70,
+            color: Colors.grey,
           ),
           onPressed: () {
             setState(() {
@@ -272,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: const Text(
         "Forgot Password?",
-        style: TextStyle(color: Colors.white70),
+        style: TextStyle(color: Colors.grey),
       ),
     );
   }
@@ -283,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           "Don’t have an account? ",
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: Colors.grey),
         ),
         GestureDetector(
           onTap: () {
