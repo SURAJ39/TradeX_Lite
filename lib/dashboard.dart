@@ -124,6 +124,7 @@ class _TradingDashboardPageState extends State<TradingDashboardPage> {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      automaticallyImplyLeading: false,
       title: !isSearching
           ? Row(
               children: [
