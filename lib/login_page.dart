@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
         Icon(Icons.bar_chart, color: Colors.amber, size: 80),
         SizedBox(height: 20),
         Text(
-          "Trading",
+          "TradeX Lite",
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
@@ -227,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -242,11 +242,11 @@ class _LoginPageState extends State<LoginPage> {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: _isAuthenticating ? null : _authenticateWithBiometrics,
-        icon: const Icon(Icons.fingerprint, color: Colors.black),
+        icon: const Icon(Icons.fingerprint, color: Colors.white),
         label: const Text(
           "Login with Fingerprint",
           style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold),
+              color: Colors.white, fontWeight: FontWeight.bold),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white30,
